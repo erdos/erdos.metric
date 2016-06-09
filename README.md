@@ -14,8 +14,8 @@ A metric is a real valued binary function `d : X x X -> [0, oo)` for which the f
 
 ## Namespaces
 
-|  namespace | description |
-+------------+-------------+
+| namespace | description |
+| --------- | ----------- |
 | `erdos.metric.fn.core` | Common functionality for metrics |
 | `erdos.metric.fn.seq`  | Metrics on sequences  |
 | `erdos.metric.fn.set` | Metrics on set |
