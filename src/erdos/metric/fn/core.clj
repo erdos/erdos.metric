@@ -1,4 +1,5 @@
-(ns erdos.metric.fn.core)
+(ns erdos.metric.fn.core
+  (:require [clojure.set :as set]))
 
 (defn intersection-count
   "number of items found in both collections."
@@ -23,60 +24,51 @@
   (if (= a b) 0.0 1.0))
 
 
-;; Metrics Transformations
+;(defmacro defmetric [sym m body])
 
-(defn add
-  "Addition of two metrics"
-  [m1 m2]
-  (assert (ifn? m1))
-  (assert (ifn? m2))
-  (fn [a b] (+ (m1 a b) (+ m2 a b))))
+(comment
 
+  ;; IDEAS: protocols for various properties.
 
-(defn sum
-  "Summation of finite number of metrics"
-  [& ms]
-  (assert (every? ifn? ms))
-  (fn [a b] (reduce + (map #(% a b) ms))))
+  (defprotocol HasSupremum
+    (supremum [_]))
 
+  (defn bound? [x] (satisfies? BoundMetric x))
 
-(defn mult
-  "Multiplication of two metrics"
-  [m1 m2]
-  (assert (ifn? m1))
-  (assert (ifn? m2))
-  (fn [a b] (* (m1 a b) (m2 a b))))
+  (defprotocol MetricAxioms
+    (separation? [_])
+    (indiscernibles? [_])
+    (symmetry? [_])
+    (subadditivity? [_]))
 
+  (defprotocol FiniteDomain
+    (enum-domain [_]))
+  (defprotocol FiniteRange
+    (enum-range [_]))
 
-(defn prod
-  "Product of finite number of metrics"
-  [& ms]
-  (assert (every? ifn? ms))
-  (fn [a b] (reduce * (map #(% a b) ms))))
+  (defprotocol )
 
+  (defn add [m1 m2]
+    (metric {:bound (if (and (bound? m1) (bound? m2))
+                      (+ (bound m1) (bound m2)))
+             :posdef (and (:posdef m1) (:posdef m2))
+             :symmetriy (and (:symmetry m1) (:symmetry m2))
+             :triangle (and (triangle? m1) (triangle? m2))
+             :ultrametric false
+             :intrinsic false
+             :translation-invariant true
+             :range (if (and (:range m1) (:range m2))
+                      (for [x (:range m1) y (:range m2)]
+                        (+ m1 m2)))
+             :domain (if (and (:domain m1)
+                              (:domain m2))
+                       (set/intersection (set (:domain m1))
+                                         (set (:domain m2))))
 
-(defn dilate
-  "Dilatation of a metric"
-  [c m]
-  (assert (number? c))
-  (assert (ifn? m))
-  (fn [a b] (* c (m a b))))
+             }
+            (+ (m1 %1 %2) (m2 %1 %2))
 
+            )
+    )
 
-(defn truncate [c m]
-  (assert (number? c))
-  (assert (ifn?))
-  (fn [a b] (min c (m a b))))
-
-
-(defn uniformly [x m]
-  (assert (number? x))
-  (assert (ifn? m))
-  (fn [a b] (max x (m a b))))
-
-
-(defn translate [c m]
-  (assert (number? c) "c is not a number!")
-  (assert (>= c 0) "c is negative!")
-  (assert (ifn? m) "m is not a metric!")
-  (fn [a b] (if (= a b) 0.0 (+ c (m a b)))))
+  )
