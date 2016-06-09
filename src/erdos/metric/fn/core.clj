@@ -23,6 +23,8 @@
   [a b]
   (if (= a b) 0.0 1.0))
 
+(defmacro reduce-two [result a b])
+
 
 ;(defmacro defmetric [sym m body])
 
