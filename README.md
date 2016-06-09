@@ -22,6 +22,7 @@ A metric is a real valued binary function `d : X x X -> [0, oo)` for which the f
 | `erdos.metric.fn.bag` | Metrics on multiset (bag) |
 | `erdos.metric.fn.n-gram` | n-gram similarities and metrics |
 | `erdos.metric.fn.real`   | Metrics for real numbers (doubles) |
+| `erdos.metric.fn.vector` | Metrics for real vectors |
 
 ## License
 
